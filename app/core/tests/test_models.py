@@ -20,7 +20,7 @@ class ModelTests(TestCase):
         """test for new user's email normalized"""
         email = 'sparky@EMaiL.com'
         user = get_user_model().objects.create_user(
-            email=email, 
+            email=email,
             password='password123'
         )
 
@@ -30,7 +30,7 @@ class ModelTests(TestCase):
         """test creating user with no email raises error"""
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(None, 'test123')
-    
+
     def test_create_new_superuser(self):
         """test creating a new superuser"""
         user = get_user_model().objects.create_superuser(
