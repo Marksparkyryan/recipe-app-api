@@ -53,7 +53,5 @@ class ModelTests(TestCase):
             name='Vegan',
             user=sample_user(),
         )
-        
+
         self.assertEqual(str(tag), tag.name)
-    
-    
