@@ -6,9 +6,9 @@ from core.models import Tag, Ingredient, Recipe
 from recipe import serializers
 
 
-class BaseRecipeBaseTagsViewset(viewsets.GenericViewSet,
-                                mixins.ListModelMixin,
-                                mixins.CreateModelMixin):
+class BaseIngredientBaseTagViewset(viewsets.GenericViewSet,
+                                   mixins.ListModelMixin,
+                                   mixins.CreateModelMixin):
     """Base viewset for Receipes and Tags"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -22,13 +22,13 @@ class BaseRecipeBaseTagsViewset(viewsets.GenericViewSet,
         serializer.save(user=self.request.user)
 
 
-class TagViewSet(BaseRecipeBaseTagsViewset):
+class TagViewSet(BaseIngredientBaseTagViewset):
     """Manage tags in the database"""
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
 
-class IngredientViewSet(BaseRecipeBaseTagsViewset):
+class IngredientViewSet(BaseIngredientBaseTagViewset):
     """Manage ingredients in the database"""
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
@@ -44,3 +44,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Limit objects to authenticated user"""
         return self.queryset.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        """Return serializer that specializes in handling related field
+        data instead of just related keys as this views default
+        serializer does.
+        """
+        # action is lowercase
+        if self.action == 'retrieve':
+            return serializers.RecipeDetailSerializer
+
+        return self.serializer_class
