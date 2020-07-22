@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.models import Tag, Ingredient, Recipe
 from recipe import serializers
+from .permissions import ObjectOwner
 
 
 class BaseIngredientBaseTagViewset(viewsets.GenericViewSet,
@@ -13,7 +14,7 @@ class BaseIngredientBaseTagViewset(viewsets.GenericViewSet,
                                    mixins.CreateModelMixin):
     """Base viewset for Receipes and Tags"""
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, ObjectOwner)
 
     def get_queryset(self):
         """Return objects for current authenticated user only"""
@@ -52,7 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
     queryset = Recipe.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, ObjectOwner)
 
     def _params_to_ints(self, qs):
         """Convert a list of string IDs to a list of integers"""
